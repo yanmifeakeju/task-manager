@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { Env } from '@humanwhocodes/env';
 
 const env = new Env();

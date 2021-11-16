@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "jest --watch --detectOpenHandles",
-    "start": "node",
-    "dev": "nodemon"
+    "start": "node --require dotenv/config ",
+    "dev": "nodemon --require dotenv/config"
   },
   "keywords": [],
   "author": "",
