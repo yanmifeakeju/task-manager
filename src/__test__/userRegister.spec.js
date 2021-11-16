@@ -1,6 +1,12 @@
 /* eslint-disable no-undef */
 import request from 'supertest';
+import User from '../entities/users/User.js';
 import app from '../server.js';
+afterEach(async () => {
+  return User.deleteMany({});
+});
+
+jest.setTimeout(30000);
 
 describe('User Registration', () => {
   const postUserData = async (data) => {
@@ -12,16 +18,24 @@ describe('User Registration', () => {
     return response;
   };
 
-  it('returns 201 Created when request is valid', async () => {
+  it('it return 201 and stores valid request data in the database', async () => {
     const data = {
       firstName: 'user',
       lastName: 'one',
       username: 'user_one',
-      email: 'user_one@email.com',
+      email: 'user@email.com',
       password: 'user_password'
     };
     const response = await postUserData(data);
+
+    const user = await User.findOne({ email: data.email });
+
     expect(response.status).toBe(201);
+    expect(user.firstName).toBe(data.firstName);
+    expect(user.lastName).toBe(data.lastName);
+    expect(user.username).toBe(data.username);
+    expect(user.password).not.toBe(data.password);
+    expect(user.email).toBe(data.email);
   });
 
   it('returns 422 if firstName field is not provided', async () => {

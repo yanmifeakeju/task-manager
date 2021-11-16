@@ -19,7 +19,7 @@ export const validateCreateUserData = async (data) => {
       .required()
       .trim()
       .message('You have not provided a valid email'),
-    password: Joi.string().trim().required()
+    password: Joi.string().trim().required().min(6)
   });
 
   return schema.validate(data);
