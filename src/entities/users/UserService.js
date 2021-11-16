@@ -1,7 +1,16 @@
 import User from './User.js';
+import { validateCreateUserData } from './validation.js';
 
 export const createUser = async (req, res) => {
-  const user = User.create(req.body);
+  const { error, value } = await validateCreateUserData(req.body);
 
-  res.status(201).json({ message: `User with ${user.emal} created` });
+  if (error) {
+    const { message } = error.details[0];
+
+    return res
+      .status(422)
+      .json({ error: { status: 'Invalid request data', message } });
+  }
+
+  return res.status(201).json(value);
 };

@@ -12,11 +12,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.use('/', (req, res) => {
+app.get('/', (req, res) => {
   res.send('Application is running ');
 });
 
-app.use('/users', UserRouter);
+app.use('/api/v1/users', UserRouter);
 // app.use('/tasks', taskRouter);
 
 export default app;

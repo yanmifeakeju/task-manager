@@ -31,12 +31,13 @@ const UserSchema = new Schema({
     min: 6,
     trim: true
   },
-  dateOfBirth: {
+  createdAt: {
     type: Date,
-    required: true
-    // validate(value) {
-    //   // if(Date.now )
-    // },
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
 });
 
