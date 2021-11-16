@@ -6,13 +6,14 @@ const connectDB = async () => {
   try {
     const connection = await mongoose.connect(databaseURL, {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
     });
 
     // console.log('Connected to database');
 
     return connection;
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error);
   }
 };

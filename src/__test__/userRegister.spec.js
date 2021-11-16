@@ -1,10 +1,10 @@
 /* eslint-disable no-undef */
+import 'dotenv/config';
 import request from 'supertest';
 import User from '../entities/users/User.js';
 import app from '../server.js';
-afterEach(async () => {
-  return User.deleteMany({});
-});
+
+afterEach(async () => User.deleteMany({}));
 
 jest.setTimeout(30000);
 
@@ -14,7 +14,6 @@ describe('User Registration', () => {
       .post('/api/v1/users')
       .send(data);
 
-    console.log(response.status);
     return response;
   };
 
@@ -24,7 +23,7 @@ describe('User Registration', () => {
       lastName: 'one',
       username: 'user_one',
       email: 'user@email.com',
-      password: 'user_password'
+      password: 'user_password',
     };
     const response = await postUserData(data);
 
@@ -43,7 +42,7 @@ describe('User Registration', () => {
       lastName: 'one',
       username: 'user_one',
       email: 'user_one@email.com',
-      password: 'user_password'
+      password: 'user_password',
     };
     const response = await postUserData(data);
 
@@ -55,7 +54,7 @@ describe('User Registration', () => {
       firstName: 'one',
       username: 'user_one',
       email: 'user_one@email.com',
-      password: 'user_password'
+      password: 'user_password',
     };
     const response = await postUserData(data);
 
@@ -67,7 +66,7 @@ describe('User Registration', () => {
       firstName: 'one',
       lastName: 'one',
       email: 'user_one@email.com',
-      password: 'user_password'
+      password: 'user_password',
     };
     const response = await postUserData(data);
 
@@ -79,7 +78,7 @@ describe('User Registration', () => {
       firstName: 'user',
       lastName: 'one',
       username: 'user_one',
-      password: 'user_password'
+      password: 'user_password',
     };
     const response = await postUserData(data);
 
@@ -91,7 +90,7 @@ describe('User Registration', () => {
       firstName: 'user',
       lastName: 'one',
       username: 'user_one',
-      email: 'user_one@email.com'
+      email: 'user_one@email.com',
     };
     const response = await postUserData(data);
 

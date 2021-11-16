@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
@@ -7,39 +8,39 @@ const UserSchema = new Schema({
   firstName: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   lastName: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   username: {
     type: String,
     required: true,
     trim: true,
-    unique: true
+    unique: true,
   },
   email: {
     type: String,
     required: true,
     trim: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
     required: true,
     min: 6,
-    trim: true
+    trim: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 UserSchema.pre('save', async function (next) {

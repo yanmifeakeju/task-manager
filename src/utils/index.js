@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 export function parseDate(date, delimiter) {
   const [day, month, year] = date.split(delimiter);
   if (!month || !year || Number(day) > 31) {

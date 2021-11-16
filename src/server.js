@@ -1,6 +1,5 @@
 import express from 'express';
 import morgan from 'morgan';
-// import 'dotenv/config';
 
 import './db/mongoose.js';
 import UserRouter from './entities/users/UserRouter.js';
