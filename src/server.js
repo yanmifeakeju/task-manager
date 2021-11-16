@@ -3,8 +3,7 @@ import morgan from 'morgan';
 // import 'dotenv/config';
 
 import './db/mongoose.js';
-import taskRouter from './routes/tasks.js';
-import userRouter from './routes/users.js';
+import UserRouter from './entities/users/UserRouter.js';
 
 const app = express();
 
@@ -17,7 +16,7 @@ app.use('/', (req, res) => {
   res.send('Application is running ');
 });
 
-app.use('/users', userRouter);
-app.use('/tasks', taskRouter);
+app.use('/users', UserRouter);
+// app.use('/tasks', taskRouter);
 
 export default app;
