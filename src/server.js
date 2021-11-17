@@ -3,6 +3,7 @@ import morgan from 'morgan';
 
 import './db/mongoose.js';
 import UserRouter from './entities/users/UserRouter.js';
+import authRouter from './auth/routes.js';
 
 const app = express();
 
@@ -15,7 +16,9 @@ app.get('/', (req, res) => {
   res.send('Application is running ');
 });
 
+app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', UserRouter);
+
 // app.use('/tasks', taskRouter);
 
 export default app;

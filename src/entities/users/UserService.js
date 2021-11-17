@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
+import { validateCreateUserData } from './helpers.js';
 import User from './User.js';
-import { validateCreateUserData } from './validation.js';
 
 export const createUser = async (req, res) => {
   try {
