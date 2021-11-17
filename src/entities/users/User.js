@@ -52,4 +52,18 @@ UserSchema.pre('save', async function (next) {
 
 const User = model('users', UserSchema);
 
+UserSchema.statics.findByCredentials = async function ({
+  email,
+  password,
+}) {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error('Invalid Credentials');
+  }
+  const isValidCredentials = await bcrypt.compare(
+    password,
+    user.password,
+  );
+};
+
 export default User;

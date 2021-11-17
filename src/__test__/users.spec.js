@@ -76,6 +76,12 @@ describe('User Registration', () => {
 });
 
 describe('User Authentication', () => {
+  it('does not log in a user with no email and password', async () => {
+    const response = await request(app).post('/api/v1/auth').send({});
+
+    expect(response.status).toBe(401);
+  });
+
   it('does not log in a user with an invalid email address', async () => {
     const response = await request(app)
       .post('/api/v1/auth')
