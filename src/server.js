@@ -1,8 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 
-import './db/mongoose.js';
-import UserRouter from './entities/users/UserRouter.js';
+import UserRouter from './entities/users/router.js';
 import authRouter from './auth/routes.js';
 
 const app = express();

@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import 'dotenv/config';
 import request from 'supertest';
-import User from '../entities/users/User.js';
+import User from '../entities/users/model.js';
 import app from '../server.js';
 
 beforeAll(async () => User.deleteMany({}));
@@ -55,6 +55,13 @@ describe('User Registration', () => {
 
   it('returns 422 if password field is not provided', async () => {
     const data = { ...validData, password: undefined };
+    const response = await postUserData(data);
+
+    expect(response.status).toBe(422);
+  });
+
+  it('returns 422 if all field are not provided', async () => {
+    const data = {};
     const response = await postUserData(data);
 
     expect(response.status).toBe(422);

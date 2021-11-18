@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-export const validateCreateUserData = async (data) => {
+export const validateCreateUserData = (data) => {
   const schema = Joi.object({
     firstName: Joi.string()
       .required()
@@ -22,5 +22,5 @@ export const validateCreateUserData = async (data) => {
     password: Joi.string().trim().required().min(6),
   });
 
-  return schema.validate(data);
+  return schema.validate(data, { abortEarly: false });
 };

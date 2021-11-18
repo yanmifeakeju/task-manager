@@ -1,4 +1,4 @@
-import User from '../entities/users/User.js';
+import User from '../entities/users/model.js';
 import { validateLoginData } from './helpers.js';
 
 export const login = async (req, res) => {

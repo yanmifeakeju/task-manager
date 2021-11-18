@@ -1,19 +1,10 @@
 /* eslint-disable import/prefer-default-export */
-import { validateCreateUserData } from './helpers.js';
-import User from './User.js';
+
+import User from './model.js';
 
 export const createUser = async (req, res) => {
   try {
-    const { error, value } = await validateCreateUserData(req.body);
-
-    if (error) {
-      const { message } = error.details[0];
-      return res
-        .status(422)
-        .json({ error: { status: 'Invalid request data', message } });
-    }
-
-    const user = await User.create(value);
+    const user = await User.create(req.body);
     return res.status(201).json({
       data: {
         message: `User with email ${user.email} created succesfully`,

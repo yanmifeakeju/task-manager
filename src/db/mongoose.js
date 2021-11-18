@@ -2,14 +2,14 @@ import mongoose from 'mongoose';
 
 import { databaseURL } from '../config/index.js';
 
-const connectDB = async () => {
+const db = async () => {
   try {
     const connection = await mongoose.connect(databaseURL, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
 
-    // console.log('Connected to database');
+    // console.
 
     return connection;
   } catch (error) {
@@ -18,6 +18,5 @@ const connectDB = async () => {
   }
 };
 
-const db = connectDB().then((connection) => connection);
-
+db();
 export default db;
