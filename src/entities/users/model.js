@@ -1,6 +1,8 @@
 /* eslint-disable func-names */
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { JWTSignature } from '../../config/index.js';
 
 const { Schema, model } = mongoose;
 
@@ -50,12 +52,11 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
-const User = model('users', UserSchema);
-
 UserSchema.statics.findByCredentials = async function ({
   email,
   password,
 }) {
+  // eslint-disable-next-line no-use-before-define
   const user = await User.findOne({ email });
   if (!user) {
     throw new Error('Invalid Credentials');
@@ -64,6 +65,18 @@ UserSchema.statics.findByCredentials = async function ({
     password,
     user.password,
   );
+
+  if (!isValidCredentials) {
+    throw new Error('Invalid Credentials');
+  }
+
+  const payload = {
+    id: user.id,
+  };
+
+  const token = jwt.sign(payload, JWTSignature);
+  return token;
 };
 
+const User = model('users', UserSchema);
 export default User;

@@ -2,7 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 
 import UserRouter from './entities/users/router.js';
-import authRouter from './auth/routes.js';
+import authRouter from './entities/auth/routes.js';
 
 const app = express();
 

@@ -15,8 +15,6 @@ afterAll(async () => {
   await db.closeConnection();
 });
 
-jest.setTimeout(300000000);
-
 const validData = {
   firstName: 'user',
   lastName: 'one',
@@ -104,5 +102,15 @@ describe('User Authentication', () => {
       .send({ email: 'invalidemail.com', password: 'invalid' });
 
     expect(response.status).toBe(401);
+  });
+
+  it('returns a jwt token when user provide valid email and adress', async () => {
+    const { email, password } = validData;
+    const response = await request(app)
+      .post('/api/v1/auth')
+      .send({ email, password });
+
+    expect(response.status).toBe(200);
+    expect(response.body.token).not.toBeUndefined();
   });
 });

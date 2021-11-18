@@ -18,5 +18,5 @@ const db = async () => {
   }
 };
 
-db();
+await db();
 export default db;
