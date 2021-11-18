@@ -1,12 +1,21 @@
 /* eslint-disable no-undef */
 import 'dotenv/config';
 import request from 'supertest';
+import * as db from './db.js';
 import User from '../entities/users/model.js';
 import app from '../server.js';
 
-beforeAll(async () => User.deleteMany({}));
-afterAll(async () => User.deleteMany({}));
-jest.setTimeout(30000);
+beforeAll(async () => {
+  await db.connect();
+});
+afterAll(async () => {
+  await db.clearDatabase();
+});
+afterAll(async () => {
+  await db.closeConnection();
+});
+
+jest.setTimeout(300000000);
 
 const validData = {
   firstName: 'user',

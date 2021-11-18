@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server-core';
 
-const mongod = await MongoMemoryServer.create();
+let mongoServer;
 
 export const connect = async () => {
-  const uri = mongod.getUri();
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
   const mongooseOpts = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    poolSize: 10,
   };
 
   await mongoose.connect(uri, mongooseOpts);
@@ -17,14 +17,15 @@ export const connect = async () => {
 export const closeConnection = async () => {
   await mongoose.connection.dropDatabase();
   await mongoose.connection.close();
-  await mongod.stop();
+  await mongoServer.stop();
 };
 
 export const clearDatabase = async () => {
   const { collections } = mongoose.connection;
-  console.log(collections);
+
   const keys = Object.keys(collections);
-  collections.forEach((collection) => {
-    console.log(collection);
+
+  keys.forEach((key) => {
+    collections[key].deleteMany();
   });
 };
