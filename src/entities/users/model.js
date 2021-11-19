@@ -70,11 +70,18 @@ UserSchema.statics.findByCredentials = async function ({
     throw new Error('Invalid Credentials');
   }
 
+  return user;
+};
+
+UserSchema.methods.generateAuthToken = async function () {
   const payload = {
-    id: user.id,
+    id: this.id,
   };
 
-  const token = jwt.sign(payload, JWTSignature);
+  const token = await jwt.sign(payload, JWTSignature, {
+    expiresIn: '7d',
+  });
+
   return token;
 };
 

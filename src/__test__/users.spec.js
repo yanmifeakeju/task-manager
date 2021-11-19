@@ -104,7 +104,7 @@ describe('User Authentication', () => {
     expect(response.status).toBe(401);
   });
 
-  it('returns a jwt token when user provide valid email and adress', async () => {
+  it('returns a token property when user provide valid email and adress', async () => {
     const { email, password } = validData;
     const response = await request(app)
       .post('/api/v1/auth')
