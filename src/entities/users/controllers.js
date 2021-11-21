@@ -1,15 +1,14 @@
 /* eslint-disable import/prefer-default-export */
 
-import User from './model.js';
+import { createNewUser } from './service.js';
 
 export const createUser = async (req, res) => {
   try {
-    const user = await User.create(req.body);
-    const token = await user.generateAuthToken();
+    const { message, token } = await createNewUser(req.body);
 
     return res.status(201).json({
       data: {
-        message: `User with email ${user.email} created succesfully`,
+        message,
         token,
       },
     });

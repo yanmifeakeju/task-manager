@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "jest --watch --detectOpenHandles --verbose",
+    "test": "jest --watch --detectOpenHandles",
     "start": "node --require dotenv/config ",
     "dev": "nodemon --require dotenv/config",
     "lint": "eslint .",
@@ -22,7 +22,9 @@
     "joi": "^17.4.2",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.1.4",
-    "mongoose": "^6.0.12"
+    "mongoose": "^6.0.12",
+    "node-uuid": "^1.4.8",
+    "redis": "^3.1.2"
   },
   "devDependencies": {
     "@babel/plugin-syntax-top-level-await": "^7.14.5",
