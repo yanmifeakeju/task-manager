@@ -22,6 +22,15 @@ export const createNewUser = async ({
   }
 };
 
-export const updateUser = async (fields) => {};
+export const loginUser = async ({ email, password }) => {
+  try {
+    const user = await User.findByCredentials({ email, password });
+    const token = await user.generateAuthToken();
+
+    return token;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const updatePassword = async (id, password) => {};
