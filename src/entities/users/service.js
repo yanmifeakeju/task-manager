@@ -15,6 +15,7 @@ export const createNewUser = async ({
     password,
   });
   const token = await user.generateAuthToken();
+
   return { message: `User with email ${email} created`, token };
 };
 

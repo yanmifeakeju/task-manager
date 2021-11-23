@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { JWTSignature } from '../config/index.js';
-import { findById } from '../entities/users/service.js';
+import User from '../entities/users/model.js';
 
 export const protect = async (req, res, next) => {
   try {
@@ -30,22 +30,23 @@ export const protect = async (req, res, next) => {
       return res.status(403).json({});
     }
 
-    const user = await findById(decoded.id);
+    const user = await User.findOne({
+      _id: decoded.id,
+      'tokens.token': token,
+    });
 
     if (!user) {
-      return res.status(404).json({
-        status: false,
-        message: 'User not found',
-        data: null,
-      });
+      throw new Error();
     }
 
+    req.token = token;
     req.body.user = user;
     next();
   } catch (error) {
-    console.log(error);
     res.status(401).send({
-      error: { message: 'Error authenticating the request' },
+      status: false,
+      message: 'Please authenticate the request',
+      data: null,
     });
   }
 };

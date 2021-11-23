@@ -35,6 +35,15 @@ const UserSchema = new Schema({
     min: 6,
     trim: true,
   },
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
+        unique: true,
+      },
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
@@ -46,9 +55,11 @@ const UserSchema = new Schema({
 });
 
 UserSchema.pre('save', async function (next) {
-  const salt = await bcrypt.genSalt(10);
-  const password = await bcrypt.hash(this.password, salt);
-  this.password = password;
+  if (this.isModified('password')) {
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(this.password, salt);
+    this.password = password;
+  }
   next();
 });
 
@@ -58,9 +69,11 @@ UserSchema.statics.findByCredentials = async function ({
 }) {
   // eslint-disable-next-line no-use-before-define
   const user = await User.findOne({ email });
+
   if (!user) {
     throw new Error('Invalid Credentials');
   }
+
   const isValidCredentials = await bcrypt.compare(
     password,
     user.password,
@@ -81,6 +94,9 @@ UserSchema.methods.generateAuthToken = async function () {
   const token = await jwt.sign(payload, JWTSignature, {
     expiresIn: '7d',
   });
+
+  this.tokens = this.tokens.concat({ token });
+  await this.save();
 
   return token;
 };
