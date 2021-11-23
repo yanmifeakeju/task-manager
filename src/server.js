@@ -26,6 +26,11 @@ function errorLogger(error, req, res, next) {
   next(error);
 }
 
+/**
+ * TODO:
+ *Extract for production  for better error handling
+ *
+ * */
 function errorResponder(error, req, res, next) {
   if (error.code && error.code === 11000) {
     return res.status(409).json({
