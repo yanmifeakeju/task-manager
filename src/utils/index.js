@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
-export function parseDate(date, delimiter) {
+
+function parseDate(date, delimiter) {
   const [day, month, year] = date.split(delimiter);
   if (!month || !year || Number(day) > 31) {
     console.log('invalid date provided');

@@ -5,10 +5,17 @@ export const validateLoginRequest = (req, res, next) => {
 
   if (error) {
     if (error) {
-      const { message } = error.details[0];
-      return res
-        .status(401)
-        .json({ error: { status: 'Invalid request data', message } });
+      const validationErrors = error.details.map(
+        ({ path, message }) => ({
+          field: path[0],
+          message,
+        }),
+      );
+      return res.status(400).json({
+        status: false,
+        message: 'Invalid data in request body',
+        data: { validationErrors },
+      });
     }
   }
   req.body = value;

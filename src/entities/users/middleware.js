@@ -4,15 +4,17 @@ export const validateCreateUserRequest = (req, res, next) => {
   const { error, value } = validateCreateUserData(req.body);
 
   if (error) {
-    const validationError = error.details.map(
+    const validationErrors = error.details.map(
       ({ path, message }) => ({
-        path: path[0],
+        field: path[0],
         message,
       }),
     );
 
-    return res.status(422).json({
-      error: { status: 'Invalid request data', validationError },
+    return res.status(400).json({
+      status: false,
+      message: 'Invalid data in request body',
+      data: { validationErrors },
     });
   }
 

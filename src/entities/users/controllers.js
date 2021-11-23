@@ -1,21 +1,26 @@
-/* eslint-disable import/prefer-default-export */
+import { createNewUser, findById } from './service.js';
 
-import { createNewUser } from './service.js';
-
-export const createUser = async (req, res) => {
+export const createUser = async (req, res, next) => {
   try {
     const { message, token } = await createNewUser(req.body);
 
     return res.status(201).json({
+      status: true,
+      message,
       data: {
-        message,
         token,
       },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(error);
+    next(error);
   }
 };
 
-// export const updateUser = async (req, res) => {};
+export const getCurrentUser = async (req, res, next) => {
+  try {
+    const user = await findById(req.body.id);
+    return res.status(200).json({ user });
+  } catch (error) {
+    next(error);
+  }
+};

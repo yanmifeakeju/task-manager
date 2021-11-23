@@ -7,30 +7,27 @@ export const createNewUser = async ({
   email,
   password,
 }) => {
-  try {
-    const user = await User.create({
-      firstName,
-      lastName,
-      username,
-      email,
-      password,
-    });
-    const token = await user.generateAuthToken();
-    return { message: `User with ${email} created`, token };
-  } catch (error) {
-    console.log(error);
-  }
+  const user = await User.create({
+    firstName,
+    lastName,
+    username,
+    email,
+    password,
+  });
+  const token = await user.generateAuthToken();
+  return { message: `User with email ${email} created`, token };
 };
 
 export const loginUser = async ({ email, password }) => {
-  try {
-    const user = await User.findByCredentials({ email, password });
-    const token = await user.generateAuthToken();
+  const user = await User.findByCredentials({ email, password });
+  const token = await user.generateAuthToken();
 
-    return token;
-  } catch (error) {
-    console.log(error);
-  }
+  return token;
 };
 
-export const updatePassword = async (id, password) => {};
+export const findById = async (id) => {
+  const user = await User.findById(id);
+  return user;
+};
+
+// export const updatePassword = async (id, password) => {};

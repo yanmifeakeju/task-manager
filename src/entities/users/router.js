@@ -1,14 +1,11 @@
 import { Router } from 'express';
-import { protect } from '../../services/auth.js';
-import { createUser } from './controllers.js';
-// eslint-disable-next-line import/named
+import { protect } from '../../middlewares/auth.js';
 import { validateCreateUserRequest } from './middleware.js';
+import { createUser, getCurrentUser } from './controllers.js';
 
 const UserRouter = Router();
 
 UserRouter.route('/').post(validateCreateUserRequest, createUser);
-UserRouter.route('/me').post(protect, (req, res, next) => {
-  res.send('welcome');
-});
+UserRouter.route('/me').post(protect, getCurrentUser);
 
 export default UserRouter;
