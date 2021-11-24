@@ -18,7 +18,7 @@ export const createUser = async (req, res, next) => {
 
 export const getCurrentUser = async (req, res, next) => {
   try {
-    const { user } = req.body;
+    const { user } = req;
     res.status(200).json({
       status: true,
       message: 'User found',

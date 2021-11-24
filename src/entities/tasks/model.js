@@ -22,6 +22,10 @@ const TaskSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  owner: {
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
 });
 
 export default model('tasks', TaskSchema);

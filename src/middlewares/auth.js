@@ -40,7 +40,7 @@ export const protect = async (req, res, next) => {
     }
 
     req.token = token;
-    req.body.user = user;
+    req.user = user;
     next();
   } catch (error) {
     res.status(401).send({

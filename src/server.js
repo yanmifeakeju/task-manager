@@ -1,8 +1,9 @@
 import express from 'express';
 import morgan from 'morgan';
 
-import UserRouter from './entities/users/router.js';
+import usersRouter from './entities/users/routes.js';
 import authRouter from './entities/auth/routes.js';
+import tasksRouter from './entities/tasks/routes.js';
 
 const app = express();
 
@@ -16,7 +17,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/users', UserRouter);
+app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/tasks', tasksRouter);
 
 // app.use('/tasks', taskRouter);
 
