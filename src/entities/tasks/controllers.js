@@ -26,6 +26,22 @@ export const getTasks = async (req, res, next) => {
   }
 };
 
-export const updateTaskParticipants = async (req, res, next) => {};
+export const updateTaskParticipants = async (req, res, next) => {
+  try {
+    const {
+      code,
+      status,
+      message,
+      task = null,
+    } = await TaskService.updateTaskParticipants(
+      req.task,
+      req.body.email,
+    );
+
+    res.status(code).json({ status, message, data: { task } });
+  } catch (error) {
+    next(error);
+  }
+};
 
 export const deleteTask = async (req, res, next) => {};

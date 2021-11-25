@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-vars */
 import Task from './model.js';
 import User from '../users/model.js';
@@ -17,8 +18,35 @@ export const getTasks = async (ownerID) => {
   };
 };
 
-export const updateTaskParticipants = async (owner, id, email) => {
-  const participant = await User.findOne({ email });
+export const updateTaskParticipants = async (taskToUpdate, email) => {
+  let task = taskToUpdate;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return {
+      code: 404,
+      status: false,
+      message: 'No user with email exists',
+    };
+  }
+
+  const participant = user.id;
+
+  task = await Task.findOneAndUpdate(
+    {
+      _id: task._id,
+      'participants.participant': { $ne: participant },
+    },
+    { $push: { participants: { participant } } },
+    { new: true, runValidators: true },
+  );
+
+  return {
+    code: 200,
+    status: true,
+    message: 'Task Updated',
+    task,
+  };
 };
 
 export const deleteTask = async (owner, taskid) => {};

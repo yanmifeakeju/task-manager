@@ -27,17 +27,19 @@ export const populateTaskFromRequestParams = async (
   res,
   next,
 ) => {
-  const task = await Task.findById(req.params.taskId);
+  const task = await Task.findOne({
+    _id: req.params.taskId,
+  }).populate('owner');
 
   if (!task) {
     return res.status(404).json({
       status: false,
-      message: 'No task associated to this id',
+      message: 'Cannot retrieve task',
       data: null,
     });
   }
-  // console.log(req.user);
-  if (req.user._id.toString() !== task.owner.toString()) {
+
+  if (req.user._id.toString() !== task.owner._id.toString()) {
     return res.status(401).json({
       status: false,
       message: 'You are unauthorized',
