@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable func-names */
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
@@ -6,53 +7,65 @@ import { JWTSignature } from '../../config/index.js';
 
 const { Schema, model } = mongoose;
 
-const UserSchema = new Schema({
-  firstName: {
-    type: String,
-    required: true,
-    trim: true,
+const UserSchema = new Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    username: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+      min: 6,
+      trim: true,
+    },
+    tokens: [
+      {
+        token: {
+          type: String,
+          required: true,
+          unique: true,
+        },
+      },
+    ],
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  lastName: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  username: {
-    type: String,
-    required: true,
-    trim: true,
-    unique: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    trim: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-    min: 6,
-    trim: true,
-  },
-  tokens: [
-    {
-      token: {
-        type: String,
-        required: true,
-        unique: true,
+  {
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;
+        delete ret.tokens;
+        // eslint-disable-next-line no-underscore-dangle
+        delete ret.__v;
       },
     },
-  ],
-  createdAt: {
-    type: Date,
-    default: Date.now,
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+);
 
 UserSchema.pre('save', async function (next) {
   if (this.isModified('password')) {

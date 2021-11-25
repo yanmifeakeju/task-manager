@@ -25,7 +25,19 @@ const TaskSchema = new Schema({
   owner: {
     type: Schema.Types.ObjectId,
     required: true,
+    ref: 'users',
   },
+  participants: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        unique: true,
+        ref: 'users',
+      },
+    },
+  ],
 });
 
-export default model('tasks', TaskSchema);
+const Task = model('tasks', TaskSchema);
+export default Task;
