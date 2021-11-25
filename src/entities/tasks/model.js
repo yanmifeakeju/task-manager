@@ -29,7 +29,7 @@ const TaskSchema = new Schema({
   },
   participants: [
     {
-      user: {
+      participant: {
         type: Schema.Types.ObjectId,
         required: true,
         unique: true,

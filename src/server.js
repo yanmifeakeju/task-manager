@@ -44,8 +44,8 @@ function errorResponder(error, req, res, next) {
   next(error);
 }
 
-function failSafeHandler(error, req, res) {
-  res.status(500).send(error);
+function failSafeHandler(error, req, res, _) {
+  return res.status(500).send(error);
 }
 
 app.use(errorLogger);
