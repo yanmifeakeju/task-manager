@@ -26,6 +26,6 @@ export const getTasks = async (req, res, next) => {
   }
 };
 
-export const updateTask = async (req, res, next) => {};
+export const updateTaskParticipants = async (req, res, next) => {};
 
 export const deleteTask = async (req, res, next) => {};

@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+import Task from './model.js';
 import { validateNewTask } from './utils.js';
 
 export const validateNewTaskRequest = (req, res, next) => {
@@ -17,5 +19,31 @@ export const validateNewTaskRequest = (req, res, next) => {
   }
 
   req.body = value;
+  next();
+};
+
+export const populateTaskFromRequestParams = async (
+  req,
+  res,
+  next,
+) => {
+  const task = await Task.findById(req.params.taskId);
+
+  if (!task) {
+    return res.status(404).json({
+      status: false,
+      message: 'No task associated to this id',
+      data: null,
+    });
+  }
+  // console.log(req.user);
+  if (req.user._id.toString() !== task.owner.toString()) {
+    return res.status(401).json({
+      status: false,
+      message: 'You are unauthorized',
+      data: null,
+    });
+  }
+  req.task = task;
   next();
 };

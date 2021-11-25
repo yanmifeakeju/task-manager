@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import Task from './model.js';
+import User from '../users/model.js';
 
 export const createNewTask = async (owner, data) => {
   const value = { ...data, owner };
@@ -16,6 +17,8 @@ export const getTasks = async (ownerID) => {
   };
 };
 
-export const updateTask = async (owner, id, updatedFields) => {};
+export const updateTaskParticipants = async (owner, id, email) => {
+  const participant = await User.findOne({ email });
+};
 
 export const deleteTask = async (owner, taskid) => {};
