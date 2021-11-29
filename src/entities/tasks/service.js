@@ -31,15 +31,16 @@ export const updateTaskParticipants = async (taskToUpdate, email) => {
   }
 
   const participant = user.id;
+  task.participants.push({ participant });
+  await task.save();
 
-  task = await Task.findOneAndUpdate(
-    {
-      _id: task._id,
-      'participants.participant': { $ne: participant },
-    },
-    { $push: { participants: { participant } } },
-    { new: true, runValidators: true },
-  );
+  // task = await Task.findOneAndUpdate(
+  //   {
+  //     _id: task._id,
+  //   },
+  //   { $push: { participants: { participant } } },
+  //   { new: true, runValidators: true },
+  // ).populate('participants.participant');
 
   return {
     code: 200,

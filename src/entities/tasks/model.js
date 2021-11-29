@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import arrayUniquePlugin from 'mongoose-unique-array';
 
 const { Schema, model } = mongoose;
 
@@ -38,6 +39,6 @@ const TaskSchema = new Schema({
     },
   ],
 });
-
+TaskSchema.plugin(arrayUniquePlugin);
 const Task = model('tasks', TaskSchema);
 export default Task;

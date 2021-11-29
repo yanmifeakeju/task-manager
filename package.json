@@ -23,6 +23,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.1.4",
     "mongoose": "^6.0.12",
+    "mongoose-unique-array": "^0.4.2",
     "node-uuid": "^1.4.8",
     "redis": "^3.1.2"
   },

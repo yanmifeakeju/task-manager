@@ -156,13 +156,13 @@ describe('User Authentication', () => {
     expect(response.status).toBe(400);
   });
 
-  it('returns a token property when user provide valid email and adress', async () => {
+  it('returns a token property when user provide valid email and password', async () => {
     const { email, password } = validData;
     const response = await request(app)
       .post('/api/v1/auth')
       .send({ email, password });
 
     expect(response.status).toBe(200);
-    expect(response.body.token).not.toBeUndefined();
+    expect(response.body.data.token).not.toBeUndefined();
   });
 });
