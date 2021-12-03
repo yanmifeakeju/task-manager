@@ -19,7 +19,7 @@ export const getTasks = async (ownerID) => {
 };
 
 export const updateTaskParticipants = async (taskToUpdate, email) => {
-  let task = taskToUpdate;
+  const task = taskToUpdate;
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -34,13 +34,7 @@ export const updateTaskParticipants = async (taskToUpdate, email) => {
   task.participants.push({ participant });
   await task.save();
 
-  // task = await Task.findOneAndUpdate(
-  //   {
-  //     _id: task._id,
-  //   },
-  //   { $push: { participants: { participant } } },
-  //   { new: true, runValidators: true },
-  // ).populate('participants.participant');
+  // figure out population
 
   return {
     code: 200,

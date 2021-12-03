@@ -2,7 +2,6 @@
 /* eslint-disable no-undef */
 import 'dotenv/config';
 import request from 'supertest';
-// import jwt from 'jsonwebtoken';
 import * as db from './db.js';
 import User from '../entities/users/model.js';
 import app from '../server.js';
@@ -13,8 +12,6 @@ beforeAll(async () => {
 });
 afterAll(async () => {
   await db.clearDatabase();
-});
-afterAll(async () => {
   await db.closeConnection();
 });
 
@@ -34,38 +31,39 @@ const postUserData = async (data) => {
   return response;
 };
 
-describe('User Registration', () => {
+describe('User Registration: Validation', () => {
   it.each`
-    field          | expectedMessage
-    ${`firstName`} | ${`returns 400 if firstname is null`}
-    ${`lastName`}  | ${`returns 400 if lastName is null`}
-    ${`username`}  | ${`returns 400 if username is null`}
-    ${`email`}     | ${`returns 400 if email is null`}
-    ${`password`}  | ${`returns 400 if password is null`}
-  `(
-    'returns $expectedMessage when $field is null',
-    async ({ field }) => {
-      const user = {
-        firstName: 'user',
-        lastName: 'one',
-        username: 'user_one',
-        email: 'user@email.com',
-        password: 'user_password',
-      };
+    field          | value             | testMessage
+    ${`firstName`} | ${null}           | ${`returns 400 if firstname is null`}
+    ${`lastName`}  | ${null}           | ${`returns 400 if lastName is null`}
+    ${`username`}  | ${null}           | ${`returns 400 if username is null`}
+    ${`username`}  | ${'usr'}          | ${`returns 400 if username is less than 4 characters`}
+    ${`username`}  | ${'u'.repeat(31)} | ${`returns 400 if username is more than 30 characters`}
+    ${`email`}     | ${null}           | ${`returns 400 if email is null`}
+    ${`email`}     | ${'foo.bar'}      | ${`returns 400 if email is not valid`}
+    ${`password`}  | ${null}           | ${`returns 400 if password is null`}
+    ${`password`}  | ${'rr8eu'}        | ${`returns 400 if password is less than 6`}
+  `('$testMessage', async ({ field, value }) => {
+    const user = {
+      firstName: 'user',
+      lastName: 'one',
+      username: 'user_one',
+      email: 'user@email.com',
+      password: 'user_password',
+    };
 
-      delete user[field];
+    user[field] = value;
 
-      const response = await postUserData(user);
-      const { body, status } = response;
-      expect(status).toBe(400);
-      expect(body.data.validationErrors).not.toBe(undefined);
-      expect(body.data.validationErrors).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            field,
-          }),
-        ]),
-      );
-    },
-  );
+    const response = await postUserData(user);
+    const { body, status } = response;
+    expect(status).toBe(400);
+    expect(body.data.validationErrors).not.toBe(undefined);
+    expect(body.data.validationErrors).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          field,
+        }),
+      ]),
+    );
+  });
 });
