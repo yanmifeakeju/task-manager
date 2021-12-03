@@ -1,3 +1,4 @@
+/* eslint-disable prefer-regex-literals */
 /* eslint-disable no-useless-escape */
 import Joi from 'joi';
 
@@ -13,10 +14,19 @@ export const validateCreateUserData = (user) => {
       'string.base': '"username" must be a string',
     }),
     email: Joi.string().email().required().trim(),
-    password: Joi.string().trim().required().min(6).messages({
-      'string.min':
-        '"password" cannot be less than six (6) characters',
-    }),
+    password: Joi.string()
+      .trim()
+      .required()
+      .min(6)
+      .regex(
+        /^(?=.{6,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-5])(?=.*\W).*$/,
+      )
+      .messages({
+        'string.min':
+          '"password" cannot be less than six (6) characters',
+        'string.pattern.base':
+          'password must contain at least 1 uppercase, 1 lowercase, 1 number, and 1 special character',
+      }),
   });
 
   return schema.validate(user, { abortEarly: false });

@@ -43,6 +43,9 @@ describe('User Registration: Validation', () => {
     ${`email`}     | ${'foo.bar'}      | ${`returns 400 if email is not valid`}
     ${`password`}  | ${null}           | ${`returns 400 if password is null`}
     ${`password`}  | ${'rr8eu'}        | ${`returns 400 if password is less than 6`}
+    ${`password`}  | ${'alllowercase'} | ${`returns 400 if password does not contain 1 uppercase, 1 lowercase, 1 number, and 1 special character`}
+    ${`password`}  | ${'ALLUPPERCASE'} | ${`returns 400 if password does not contain 1 uppercase, 1 lowercase, 1 number, and 1 special character`}
+    ${`password`}  | ${33383838388}    | ${`returns 400 if password does not contain 1 uppercase, 1 lowercase, 1 number, and 1 special character`}
   `('$testMessage', async ({ field, value }) => {
     const user = {
       firstName: 'user',
