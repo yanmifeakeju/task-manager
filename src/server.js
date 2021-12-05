@@ -37,13 +37,14 @@ function errorResponder(error, req, res, next) {
   if (error.code && error.code === 11000) {
     return res.status(409).json({
       status: false,
-      message: 'Account exists',
-      data: { fields: Object.keys(error.keyValue) },
+      message: `${Object.keys(error.keyValue)} is already registered`,
+      data: null,
     });
   }
   next(error);
 }
 
+// eslint-disable-next-line no-unused-vars
 function failSafeHandler(error, req, res, _) {
   return res.status(500).send(error);
 }

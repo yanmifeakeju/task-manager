@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import 'dotenv/config';
 import request from 'supertest';
@@ -10,6 +9,11 @@ beforeAll(async () => {
   await db.connect();
   await db.clearDatabase();
 });
+
+beforeEach(async () => {
+  await db.clearDatabase();
+});
+
 afterAll(async () => {
   await db.clearDatabase();
   await db.closeConnection();
@@ -20,10 +24,10 @@ const validData = {
   lastName: 'one',
   username: 'user_one',
   email: 'user@email.com',
-  password: 'user_password',
+  password: 'user$passw0rD',
 };
 
-const postUserData = async (data) => {
+const postUserData = async (data = validData) => {
   const response = await request(app)
     .post('/api/v1/users')
     .send(data);
@@ -48,11 +52,7 @@ describe('User Registration: Validation', () => {
     ${`password`}  | ${33383838388}    | ${`returns 400 if password does not contain 1 uppercase, 1 lowercase, 1 number, and 1 special character`}
   `('$testMessage', async ({ field, value }) => {
     const user = {
-      firstName: 'user',
-      lastName: 'one',
-      username: 'user_one',
-      email: 'user@email.com',
-      password: 'user_password',
+      ...validData,
     };
 
     user[field] = value;
@@ -68,5 +68,52 @@ describe('User Registration: Validation', () => {
         }),
       ]),
     );
+  });
+
+  it('return 409 when email is in use', async () => {
+    await User.create({ ...validData, username: 'tolani' });
+    const response = await postUserData();
+
+    const { status, body } = response;
+    expect(status).toBe(409);
+    expect(body.message).toBe('email is already registered');
+  });
+
+  it('return 409 when username is in use', async () => {
+    await User.create({
+      ...validData,
+      email: 'tolani@t.com',
+    });
+
+    const response = await postUserData();
+
+    const { status, body } = response;
+    expect(status).toBe(409);
+    expect(body.message).toBe('username is already registered');
+  });
+});
+
+describe('User Creation', () => {
+  it('creates new user and stores user in database', async () => {
+    await postUserData();
+    const [user] = await User.find({});
+
+    expect(user.firstName).toBe(validData.firstName);
+    expect(user.lastName).toBe(validData.lastName);
+    expect(user.username).toBe(validData.username);
+    expect(user.email).toBe(validData.email);
+    expect(user.password).not.toBe(validData.password);
+    expect(user.active).toBe(false);
+    expect(user.activationToken).toBeTruthy();
+  });
+
+  it('expects new user to not be active and have activationToken', async () => {
+    await postUserData();
+    const [user] = await User.find({});
+
+    console.log(user.activationToken);
+
+    expect(user.active).toBe(false);
+    expect(user.activationToken).toBeTruthy();
   });
 });

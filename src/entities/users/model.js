@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable func-names */
+import crypto from 'crypto';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -37,6 +38,16 @@ const UserSchema = new Schema(
       min: 6,
       trim: true,
     },
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    activationToken: {
+      type: String,
+    },
+    activationTokeExpiresIn: {
+      type: Date,
+    },
     tokens: [
       {
         token: {
@@ -46,14 +57,6 @@ const UserSchema = new Schema(
         },
       },
     ],
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
     toJSON: {
@@ -64,6 +67,7 @@ const UserSchema = new Schema(
         delete ret.__v;
       },
     },
+    timestamps: true,
   },
 );
 
@@ -72,6 +76,10 @@ UserSchema.pre('save', async function (next) {
     const salt = await bcrypt.genSalt(10);
     const password = await bcrypt.hash(this.password, salt);
     this.password = password;
+  }
+
+  if (!this.active) {
+    this.activationToken = crypto.randomBytes(10).toString('hex');
   }
   next();
 });
@@ -104,7 +112,7 @@ UserSchema.methods.generateAuthToken = async function () {
     id: this.id,
   };
 
-  const token = await jwt.sign(payload, JWTSignature, {
+  const token = jwt.sign(payload, JWTSignature, {
     expiresIn: '7d',
   });
 
