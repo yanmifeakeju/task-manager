@@ -1,23 +1,26 @@
 import mongoose from 'mongoose';
-import { MongoMemoryServer } from 'mongodb-memory-server-core';
+import { MongoMemoryReplSet } from 'mongodb-memory-server-core';
 
-let mongoServer;
+let replset;
 
 export const connect = async () => {
-  mongoServer = await MongoMemoryServer.create();
-  const uri = mongoServer.getUri();
+  replset = await MongoMemoryReplSet.create({
+    replset: { count: 4 },
+  });
+
+  const uri = replset.getUri();
   const mongooseOpts = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   };
 
-  await mongoose.connect(uri, mongooseOpts);
+  mongoose.connect(uri, mongooseOpts);
 };
 
 export const closeConnection = async () => {
   await mongoose.connection.dropDatabase();
   await mongoose.connection.close();
-  await mongoServer.stop();
+  await replset.stop();
 };
 
 export const clearDatabase = async () => {
