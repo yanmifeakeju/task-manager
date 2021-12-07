@@ -2,14 +2,11 @@ import { createNewUser } from './service.js';
 
 export const createUser = async (req, res, next) => {
   try {
-    const { message, token } = await createNewUser(req.body);
+    const { message, code = 201 } = await createNewUser(req.body);
 
-    return res.status(201).json({
-      status: true,
+    return res.status(code).json({
+      status: !(code >= 400),
       message,
-      data: {
-        token,
-      },
     });
   } catch (error) {
     next(error);

@@ -2,21 +2,21 @@ import mongoose from 'mongoose';
 
 import { databaseURL } from '../config/index.js';
 
-const db = async () => {
-  try {
-    const connection = await mongoose.connect(databaseURL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+mongoose.Promise = global.Promise;
 
-    // console.
+mongoose.connect(databaseURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-    return connection;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log(error);
-  }
-};
+const conn = mongoose.connection;
 
-await db();
-export default db;
+conn.on('error', () =>
+  console.error.bind(console, 'connection error'),
+);
+
+conn.once('open', () =>
+  console.info('Connection to Database is successful'),
+);
+
+export default conn;

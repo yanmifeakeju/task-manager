@@ -1,3 +1,6 @@
+import mongoose from 'mongoose';
+import { sendActivationToken } from '../../services/email/sendActivationToken.js';
+
 import User from './model.js';
 
 export const createNewUser = async ({
@@ -7,16 +10,37 @@ export const createNewUser = async ({
   email,
   password,
 }) => {
-  const user = await User.create({
-    firstName,
-    lastName,
-    username,
-    email,
-    password,
-  });
-  const token = await user.generateAuthToken();
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  return { message: `User with email ${email} created`, token };
+  const [user] = await User.create(
+    [
+      {
+        firstName,
+        lastName,
+        username,
+        email,
+        password,
+      },
+    ],
+    { session },
+  );
+
+  try {
+    await sendActivationToken({
+      email: user.email,
+      token: user.activationToken,
+    });
+    await session.commitTransaction();
+    session.endSession();
+    return {
+      message: `User created. Please check your email ${user.email} to activate your account`,
+    };
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
 };
 
 export const loginUser = async ({ email, password }) => {

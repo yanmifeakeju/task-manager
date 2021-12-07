@@ -1,9 +1,11 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable func-names */
 import crypto from 'crypto';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import arrayUniquePlugin from 'mongoose-unique-array';
 import { JWTSignature } from '../../config/index.js';
 
 const { Schema, model } = mongoose;
@@ -53,7 +55,6 @@ const UserSchema = new Schema(
         token: {
           type: String,
           required: true,
-          unique: true,
         },
       },
     ],
@@ -63,7 +64,8 @@ const UserSchema = new Schema(
       transform(doc, ret) {
         delete ret.password;
         delete ret.tokens;
-        // eslint-disable-next-line no-underscore-dangle
+        delete ret.activationToken;
+        delete ret.activationTokeExpiresIn;
         delete ret.__v;
       },
     },
@@ -80,6 +82,9 @@ UserSchema.pre('save', async function (next) {
 
   if (!this.active) {
     this.activationToken = crypto.randomBytes(10).toString('hex');
+    this.activationTokeExpiresIn = new Date(
+      new Date().setTime(new Date().getTime() + 30 * 60 * 1000),
+    );
   }
   next();
 });
@@ -116,11 +121,11 @@ UserSchema.methods.generateAuthToken = async function () {
     expiresIn: '7d',
   });
 
-  this.tokens = this.tokens.concat({ token });
+  this.tokens.concat({ token });
   await this.save();
 
   return token;
 };
-
+UserSchema.plugin(arrayUniquePlugin);
 const User = model('users', UserSchema);
 export default User;
