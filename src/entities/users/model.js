@@ -126,6 +126,17 @@ UserSchema.methods.generateAuthToken = async function () {
 
   return token;
 };
+
+UserSchema.methods.activate = async function () {
+  this.activationToken = null;
+  this.activationTokeExpiresIn = null;
+  this.active = true;
+
+  await this.save();
+
+  return true;
+};
+
 UserSchema.plugin(arrayUniquePlugin);
 const User = model('users', UserSchema);
 export default User;

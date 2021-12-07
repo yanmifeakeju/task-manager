@@ -1,8 +1,10 @@
-import { createNewUser } from './service.js';
+import * as UserService from './service.js';
 
 export const createUser = async (req, res, next) => {
   try {
-    const { message, code = 201 } = await createNewUser(req.body);
+    const { message, code = 201 } = await UserService.createNewUser(
+      req.body,
+    );
 
     return res.status(code).json({
       status: !(code >= 400),
@@ -20,6 +22,23 @@ export const getCurrentUser = async (req, res, next) => {
       status: true,
       message: 'User found',
       data: { user },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const activateUser = async (req, res, next) => {
+  try {
+    const {
+      status = true,
+      code = 200,
+      message,
+    } = await UserService.activateUser(req.params.token);
+
+    res.status(code).json({
+      status,
+      message,
     });
   } catch (error) {
     next(error);

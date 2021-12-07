@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import 'dotenv/config';
 import request from 'supertest';
-import nodemailerStub from 'nodemailer-stub';
+// import nodemailerStub from 'nodemailer-stub';
 import * as db from './db.js';
 import User from '../entities/users/model.js';
 import * as EmailService from '../services/email/sendActivationToken.js';
@@ -145,4 +145,32 @@ describe('User Creation', () => {
   //   mockAccountActivation.mockRestore();
   //   expect(body.message).toBe('Email failed');
   // });
+});
+
+describe('Accoun Activation', () => {
+  it('activates the account when correct token is sent', async () => {
+    await postUserData();
+    let [user] = await User.find({});
+    const token = user.activationToken;
+
+    await request(app).post(`/api/v1/users/token/${token}`);
+    [user] = await User.find({});
+
+    expect(user.active).toBe(true);
+    expect(user.activationToken).toBeFalsy();
+    expect(user.activationTokeExpiresIn).toBeFalsy();
+  });
+
+  it('does not activate the account when incorrect token is sent', async () => {
+    await postUserData();
+
+    const token = 'incorrecttoken';
+
+    await request(app).post(`/api/v1/users/token/${token}`);
+    const [user] = await User.find({});
+
+    expect(user.active).toBe(false);
+    expect(user.activationToken).toBeFalsy();
+    expect(user.activationTokeExpiresIn).toBeFalsy();
+  });
 });

@@ -33,6 +33,7 @@ export const createNewUser = async ({
     });
     await session.commitTransaction();
     session.endSession();
+
     return {
       message: `User created. Please check your email ${user.email} to activate your account`,
     };
@@ -53,6 +54,27 @@ export const loginUser = async ({ email, password }) => {
 export const findById = async (id) => {
   const user = await User.findById(id);
   return user;
+};
+
+export const activateUser = async (activationToken) => {
+  const user = await User.findOne({ activationToken });
+
+  if (!user) {
+    return {
+      status: false,
+      code: 404,
+      message:
+        'Unable to activate account. Cannot find account with the activation token.',
+    };
+  }
+
+  console.log(user);
+
+  await user.activate();
+
+  return {
+    message: 'Account Activated',
+  };
 };
 
 // export const updatePassword = async (id, password) => {};
