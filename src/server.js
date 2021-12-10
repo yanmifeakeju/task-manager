@@ -1,9 +1,11 @@
+/* eslint-disable no-shadow */
 import express from 'express';
 import morgan from 'morgan';
 
 import usersRouter from './entities/users/routes.js';
 import authRouter from './entities/auth/routes.js';
 import tasksRouter from './entities/tasks/routes.js';
+import errorResponder from './middlewares/error.js';
 
 const app = express();
 
@@ -22,35 +24,6 @@ app.use('/api/v1/tasks', tasksRouter);
 
 // app.use('/tasks', taskRouter);
 
-function errorLogger(error, req, res, next) {
-  // eslint-disable-next-line no-console
-  console.log(error);
-  next(error);
-}
-
-/**
- * TODO:
- *Extract for production  for better error handling
- *
- * */
-function errorResponder(error, req, res, next) {
-  if (error.code && error.code === 11000) {
-    return res.status(409).json({
-      status: false,
-      message: `${Object.keys(error.keyValue)} is already registered`,
-      data: null,
-    });
-  }
-  next(error);
-}
-
-// eslint-disable-next-line no-unused-vars
-function failSafeHandler(error, req, res, _) {
-  return res.status(500).send(error);
-}
-
-app.use(errorLogger);
 app.use(errorResponder);
-app.use(failSafeHandler);
 
 export default app;

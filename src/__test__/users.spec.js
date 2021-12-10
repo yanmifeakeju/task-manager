@@ -170,7 +170,7 @@ describe('Accoun Activation', () => {
     const [user] = await User.find({});
 
     expect(user.active).toBe(false);
-    expect(user.activationToken).toBeFalsy();
-    expect(user.activationTokeExpiresIn).toBeFalsy();
+    expect(user.activationToken).toBeTruthy();
+    expect(user.activationTokeExpiresIn).toBeTruthy();
   });
 });

@@ -12,7 +12,6 @@ export const createNewUser = async ({
 }) => {
   const session = await mongoose.startSession();
   session.startTransaction();
-
   const [user] = await User.create(
     [
       {
@@ -40,7 +39,6 @@ export const createNewUser = async ({
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
-    throw error;
   }
 };
 

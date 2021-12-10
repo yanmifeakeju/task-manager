@@ -2,7 +2,7 @@
 /* eslint-disable no-useless-escape */
 import Joi from 'joi';
 
-export const validateCreateUserData = (user) => {
+export const validateCreateUserData = async (data) => {
   const schema = Joi.object({
     firstName: Joi.string().required().trim().messages({
       'string.base': `"firstName" must be a string`,
@@ -29,5 +29,5 @@ export const validateCreateUserData = (user) => {
       }),
   });
 
-  return schema.validate(user, { abortEarly: false });
+  return schema.validateAsync(data, { abortEarly: false });
 };
