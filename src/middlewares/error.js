@@ -1,8 +1,6 @@
 /* eslint-disable no-shadow */
 // eslint-disable-next-line no-unused-vars
 export default function errorResponder(error, _req, res, _next) {
-  console.log(Object.keys(error));
-
   let { data = null } = error;
   let { message = 'Server Error' } = error;
   let { statusCode = 500 } = error;
