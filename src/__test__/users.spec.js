@@ -4,21 +4,14 @@ import request from 'supertest';
 // import nodemailerStub from 'nodemailer-stub';
 import * as db from './db.js';
 import User from '../entities/users/model.js';
-import * as EmailService from '../services/email/sendActivationToken.js';
 import app from '../server.js';
 
-beforeAll(async () => {
-  await db.connect();
-  await db.clearDatabase();
-});
+jest.setTimeout(5000000);
 
-beforeEach(async () => {
-  await db.clearDatabase();
-});
-
-afterAll(async () => {
-  await db.clearDatabase();
-  await db.closeConnection();
+beforeAll(() => db.connect());
+afterEach(() => db.clearDatabase());
+afterAll(() => {
+  db.closeConnection();
 });
 
 const validData = {
@@ -116,35 +109,6 @@ describe('User Creation', () => {
     expect(user.active).toBe(false);
     expect(user.activationToken).toBeTruthy();
   });
-
-  // it('sends an account activation email with activationToken', async () => {
-  //   await postUserData();
-  //   const [user] = await User.find({});
-
-  //   const lastMail = nodemailerStub.interactsWithMail.lastMail();
-  //   expect(lastMail.to).toContain(user.email);
-  //   expect(lastMail.content).toContain(user.activationToken);
-  // });
-
-  it('return 502 Bad Gateway when sending email fails', async () => {
-    const mockAccountActivation = jest
-      .spyOn(EmailService, 'sendActivationToken')
-      .mockRejectedValue({ message: 'Failed to deliver email' });
-    const response = await postUserData();
-    const { status } = response;
-    expect(status).toBe(500);
-    mockAccountActivation.mockRestore();
-  });
-
-  // it('return 502 Bad Gateway when sending email fails', async () => {
-  //   const mockAccountActivation = jest
-  //     .spyOn(EmailService, 'sendActivationToken')
-  //     .mockRejectedValue();
-  //   const response = await postUserData();
-  //   const { body } = response;
-  //   mockAccountActivation.mockRestore();
-  //   expect(body.message).toBe('Email failed');
-  // });
 });
 
 describe('Accoun Activation', () => {

@@ -2,11 +2,17 @@ import { loginUser } from '../users/service.js';
 
 export const login = async (req, res, next) => {
   try {
-    const token = await loginUser(req.body);
-    res.status(200).json({
-      status: true,
-      message: 'Login Successful',
-      data: { token },
+    const {
+      code = 200,
+      message,
+      status = true,
+      data = null,
+    } = await loginUser(req.body);
+
+    res.status(code).json({
+      status,
+      message,
+      data,
     });
   } catch (error) {
     next(error);

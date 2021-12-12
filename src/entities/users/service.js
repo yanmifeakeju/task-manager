@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import ErrorResponse from '../../error/ErrorResponse.js';
 import { sendActivationToken } from '../../services/email/sendActivationToken.js';
 
 import User from './model.js';
@@ -43,10 +44,22 @@ export const createNewUser = async ({
 };
 
 export const loginUser = async ({ email, password }) => {
-  const user = await User.findByCredentials({ email, password });
+  const user = await User.findByCredentials({
+    email,
+    password,
+  });
+
+  if (user && !user.active) {
+    throw new ErrorResponse('Please activate your');
+  }
   const token = await user.generateAuthToken();
 
-  return token;
+  return {
+    status: false,
+    message: 'Authentication Token',
+    code: 401,
+    data: { token },
+  };
 };
 
 export const findById = async (id) => {
@@ -66,7 +79,13 @@ export const activateUser = async (activationToken) => {
     };
   }
 
-  console.log(user);
+  if (user.active) {
+    return {
+      status: false,
+      code: 409,
+      message: 'Account activated',
+    };
+  }
 
   await user.activate();
 
