@@ -126,7 +126,7 @@ UserSchema.methods.generateAuthToken = async function () {
     expiresIn: '7d',
   });
 
-  this.tokens.concat({ token });
+  this.tokens.push({ token });
   await this.save();
 
   return token;

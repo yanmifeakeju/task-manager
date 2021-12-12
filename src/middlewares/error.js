@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 // eslint-disable-next-line no-unused-vars
-export default function errorResponder(error, _req, res, _next) {
+export default function errorResponder(error, req, res, _next) {
   let { data = null } = error;
   let { message = 'Server Error' } = error;
   let { statusCode = 500 } = error;
@@ -25,5 +25,6 @@ export default function errorResponder(error, _req, res, _next) {
     status: false,
     message,
     data,
+    path: req.originalUrl,
   });
 }

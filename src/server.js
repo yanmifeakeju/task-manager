@@ -12,7 +12,8 @@ const app = express();
 app.disable('x-powered-by');
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-app.use(morgan('dev'));
+
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
   res.send('Application is running ');

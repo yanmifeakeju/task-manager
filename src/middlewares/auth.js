@@ -26,6 +26,8 @@ export const protect = async (req, res, next) => {
 
     const decoded = jwt.verify(token, JWTSignature);
 
+    console.log(decoded);
+
     if (!decoded) {
       return res.status(403).json({});
     }

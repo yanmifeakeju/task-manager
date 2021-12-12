@@ -27,10 +27,10 @@ export const createNewUser = async ({
   );
 
   try {
-    await sendActivationToken({
-      email: user.email,
-      token: user.activationToken,
-    });
+    // await sendActivationToken({
+    //   email: user.email,
+    //   token: user.activationToken,
+    // });
     await session.commitTransaction();
     session.endSession();
 
@@ -57,7 +57,6 @@ export const loginUser = async ({ email, password }) => {
   return {
     status: false,
     message: 'Authentication Token',
-    code: 401,
     data: { token },
   };
 };
