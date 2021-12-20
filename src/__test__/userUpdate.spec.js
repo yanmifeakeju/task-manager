@@ -78,7 +78,7 @@ describe('User Update', () => {
     expect(status).toBe(200);
   });
 
-  it.only('returns 200 with empty request body and with user data', async () => {
+  it('returns 200 with empty request body and with user data', async () => {
     const user = await createUser({ ...validData, active: true });
     const authorizationToken = await user.generateAuthToken();
 
@@ -92,5 +92,32 @@ describe('User Update', () => {
     expect(status).toBe(200);
     expect(body.data.user).toBeTruthy();
     expect(body.data.user.firstName).toBe(user.firstName);
+  });
+
+  it('returns 400 with response updated user data', async () => {
+    await createUser();
+
+    const user = await createUser({
+      ...validData,
+      username: 'bola',
+      email: 'bola@email.com',
+      active: true,
+    });
+    const authorizationToken = await user.generateAuthToken();
+    const update = {
+      username: validData.username,
+    };
+
+    const response = await request(app)
+      .put('/api/v1/users/me')
+      .set('Authorization', `Bearer ${authorizationToken}`)
+      .send(update);
+
+    const { status, body } = response;
+    const notUpdated = await User.findById(user.id);
+
+    expect(status).toBe(409);
+    expect(body.data).toBeFalsy();
+    expect(user.username).toBe(notUpdated.username);
   });
 });
