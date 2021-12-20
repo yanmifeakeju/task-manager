@@ -1,10 +1,7 @@
-/* eslint-disable no-undef */
 import 'dotenv/config';
 import request from 'supertest';
-// import nodemailerStub from 'nodemailer-stub';
 import * as db from './db.js';
 import User from '../entities/users/model.js';
-// import * as EmailService from '../services/email/sendActivationToken.js';
 import app from '../server.js';
 
 jest.setTimeout(5000000);
@@ -27,7 +24,7 @@ const createUser = async (data = validData) => {
   return user;
 };
 
-fdescribe('User Authorization', () => {
+describe('User Authorization', () => {
   it('It returns 401 for incorrect credentials', async () => {
     const response = await request(app)
       .post('/api/v1/auth')

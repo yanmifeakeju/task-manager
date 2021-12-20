@@ -31,3 +31,11 @@ export const validateCreateUserData = async (data) => {
 
   return schema.validateAsync(data, { abortEarly: false });
 };
+
+export const validateUpdate = async (data) => {
+  const schema = Joi.object({
+    username: Joi.string().trim(),
+  });
+
+  return schema.validateAsync(data, { abortEarly: false });
+};

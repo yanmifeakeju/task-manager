@@ -1,4 +1,6 @@
+/* eslint-disable no-underscore-dangle */
 import * as UserService from './service.js';
+import { validateUpdate } from './utils.js';
 
 export const createUser = async (req, res, next) => {
   try {
@@ -23,6 +25,22 @@ export const getCurrentUser = async (req, res, next) => {
       message: 'User found',
       data: { user },
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUser = async (req, res, next) => {
+  try {
+    const value = await validateUpdate(req.body);
+    const user = await UserService.update(req.user._id, value);
+
+    res.status(200).json({
+      status: true,
+      message: 'User Update',
+      data: { user },
+    });
+    res.send();
   } catch (error) {
     next(error);
   }

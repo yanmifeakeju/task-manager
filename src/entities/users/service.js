@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import mongoose from 'mongoose';
 import ErrorResponse from '../../error/ErrorResponse.js';
 import { sendActivationToken } from '../../services/email/sendActivationToken.js';
@@ -64,6 +65,15 @@ export const loginUser = async ({ email, password }) => {
     message: 'Authentication Token',
     data: { token },
   };
+};
+
+export const update = async (id, value) => {
+  const user = await User.findByIdAndUpdate(id, value, {
+    new: true,
+    runValidators: true,
+  });
+
+  return user;
 };
 
 export const findById = async (id) => {

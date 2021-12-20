@@ -21,6 +21,11 @@ export default function errorResponder(error, req, res, _next) {
     statusCode = 400;
     data = { validationErrors };
   }
+
+  if (error.name && error.name === 'JsonWebTokenError') {
+    message = 'You have provided a bad authorization token';
+    statusCode = 403;
+  }
   return res.status(statusCode).json({
     status: false,
     message,

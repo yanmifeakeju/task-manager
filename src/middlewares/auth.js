@@ -10,7 +10,7 @@ export const protect = async (req, res, next) => {
     if (!token) {
       return next(
         new ErrorResponse(
-          'This a protected route. Please authorize request',
+          'This a protected route and requires authentication',
           401,
         ),
       );
@@ -20,17 +20,23 @@ export const protect = async (req, res, next) => {
       return next(
         new ErrorResponse(
           'This is an invalid authentication scheme',
-          401,
+          403,
         ),
       );
     }
 
-    [, token] = token.split(' ');
+    [, token] = token.trim().split(' ');
+
+    if (!token) {
+      return next(
+        new ErrorResponse('You must provide a valid token', 403),
+      );
+    }
 
     const decoded = jwt.verify(token, JWTSignature);
 
     if (!decoded) {
-      return res.status(403).json({});
+      return next(new ErrorResponse('Invalid token provided ', 403));
     }
 
     const user = await User.findOne({
@@ -52,6 +58,6 @@ export const protect = async (req, res, next) => {
 
     next();
   } catch (error) {
-    next(new ErrorResponse('Invalid Token', 401));
+    next(error);
   }
 };
