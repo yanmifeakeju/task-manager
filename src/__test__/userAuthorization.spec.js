@@ -28,6 +28,16 @@ const createUser = async (data = validData) => {
 };
 
 fdescribe('User Authorization', () => {
+  it('It returns 401 for incorrect credentials', async () => {
+    const response = await request(app)
+      .post('/api/v1/auth')
+      .send({ email: validData.email, password: validData.password });
+
+    const { status } = response;
+
+    expect(status).toBe(401);
+  });
+
   it('It returns 401 if an non-active user tries to log in', async () => {
     await createUser();
 
