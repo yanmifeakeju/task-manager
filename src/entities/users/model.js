@@ -101,10 +101,6 @@ UserSchema.statics.findByCredentials = async function ({
     throw new ErrorResponse('Invalid Credentials', 401);
   }
 
-  if (!user.active) {
-    throw new ErrorResponse('Please activate your account', 401);
-  }
-
   const isValidCredentials = await bcrypt.compare(
     password,
     user.password,

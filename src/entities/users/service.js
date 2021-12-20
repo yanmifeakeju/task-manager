@@ -27,10 +27,12 @@ export const createNewUser = async ({
   );
 
   try {
-    // await sendActivationToken({
-    //   email: user.email,
-    //   token: user.activationToken,
-    // });
+    if (process.env.NODE_ENV === 'production')
+      await sendActivationToken({
+        email: user.email,
+        token: user.activationToken,
+      });
+
     await session.commitTransaction();
     session.endSession();
 
@@ -50,7 +52,10 @@ export const loginUser = async ({ email, password }) => {
   });
 
   if (user && !user.active) {
-    throw new ErrorResponse('Please activate your');
+    throw new ErrorResponse(
+      'Please activate you need to activate your account',
+      401,
+    );
   }
   const token = await user.generateAuthToken();
 

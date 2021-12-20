@@ -1,32 +1,35 @@
 import jwt from 'jsonwebtoken';
 import { JWTSignature } from '../config/index.js';
 import User from '../entities/users/model.js';
+import ErrorResponse from '../error/ErrorResponse.js';
 
 export const protect = async (req, res, next) => {
   try {
     let token = req.header('Authorization') ?? null;
 
+    console.log(token);
+
     if (!token) {
-      return res.status(403).json({
-        error: {
-          message: 'This is a protected and requires authentication',
-        },
-      });
+      return next(
+        new ErrorResponse(
+          'This a protected route. Please authorize request',
+          401,
+        ),
+      );
     }
 
     if (!token.startsWith('Bearer')) {
-      return res.status(422).json({
-        status: false,
-        message: 'Please provide a valid authutentication scheme',
-        data: null,
-      });
+      return next(
+        new ErrorResponse(
+          'This is an invalid authentication scheme',
+          401,
+        ),
+      );
     }
 
     [, token] = token.split(' ');
 
     const decoded = jwt.verify(token, JWTSignature);
-
-    console.log(decoded);
 
     if (!decoded) {
       return res.status(403).json({});
@@ -38,17 +41,19 @@ export const protect = async (req, res, next) => {
     });
 
     if (!user) {
-      throw new Error();
+      return next(
+        new ErrorResponse(
+          'Unauthorized token. Please re-authenticate',
+          401,
+        ),
+      );
     }
 
     req.token = token;
     req.user = user;
+
     next();
   } catch (error) {
-    res.status(401).send({
-      status: false,
-      message: 'Please authenticate the request',
-      data: null,
-    });
+    next(new ErrorResponse('Invalid Token', 401));
   }
 };
