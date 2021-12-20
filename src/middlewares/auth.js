@@ -7,8 +7,6 @@ export const protect = async (req, res, next) => {
   try {
     let token = req.header('Authorization') ?? null;
 
-    console.log(token);
-
     if (!token) {
       return next(
         new ErrorResponse(
