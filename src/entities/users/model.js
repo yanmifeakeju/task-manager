@@ -59,6 +59,8 @@ const UserSchema = new Schema(
         },
       },
     ],
+    resetToken: String,
+    resetTokenExpiresIn: Date,
   },
   {
     toJSON: {
@@ -125,6 +127,18 @@ UserSchema.methods.generateAuthToken = async function () {
   this.tokens.push({ token });
   await this.save();
 
+  return token;
+};
+
+UserSchema.methods.generateResetToken = async function () {
+  const token = crypto.randomBytes(4).toString('hex');
+
+  this.resetToken = token;
+  this.resetTokenExpiresIn = new Date(
+    new Date().getTime() + 30 * 60000,
+  );
+
+  await this.save();
   return token;
 };
 

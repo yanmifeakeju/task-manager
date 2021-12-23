@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import mongoose from 'mongoose';
+
 import ErrorResponse from '../../error/ErrorResponse.js';
 import { sendActivationToken } from '../../services/email/sendActivationToken.js';
 
@@ -116,6 +117,10 @@ export const resetPasswordToken = async ({ email }) => {
       404,
     );
   }
+
+  await user.generateResetToken();
+
+  // TODO::Send token in email
 };
 
 // export const updatePassword = async (id, password) => {};
