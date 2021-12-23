@@ -6,6 +6,7 @@ import {
   createUser,
   getCurrentUser,
   updateUser,
+  recoverAccount,
 } from './controllers.js';
 
 const UserRouter = Router();
@@ -15,5 +16,5 @@ UserRouter.route('/me')
   .get(protect, getCurrentUser)
   .put(protect, updateUser);
 UserRouter.route('/token/:token').post(activateUser);
-
+UserRouter.route('/recovery').post(recoverAccount);
 export default UserRouter;

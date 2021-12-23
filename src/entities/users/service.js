@@ -108,4 +108,14 @@ export const activateUser = async (activationToken) => {
   };
 };
 
+export const resetPasswordToken = async ({ email }) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new ErrorResponse(
+      'Please confirm that you have provided a valid email address with a registered account',
+      404,
+    );
+  }
+};
+
 // export const updatePassword = async (id, password) => {};

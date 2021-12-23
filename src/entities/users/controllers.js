@@ -62,3 +62,12 @@ export const activateUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const recoverAccount = async (req, res, next) => {
+  try {
+    const user = await UserService.resetPasswordToken(req.body);
+    res.send();
+  } catch (error) {
+    next(error);
+  }
+};
