@@ -54,4 +54,56 @@ describe('Password Recovery', () => {
     expect(user.resetToken).toBeTruthy();
     expect(user.resetTokenExpiresIn).toBeTruthy();
   });
+
+  it('return 404 when incorrect token is sent for  password change request', async () => {
+    await createUser({
+      ...validData,
+      resetToken: 'aresettoken',
+      resetTokenExpiresIn: new Date(),
+    });
+
+    const response = await request(app)
+      .put('/api/v1/users/recovery')
+      .send({ token: 'aresetto', password: 'user$passw1d#D' });
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe(
+      'Unable to retrieve user data',
+    );
+  });
+
+  it('return 404 when token sent has expired for  password change request', async () => {
+    await createUser({
+      ...validData,
+      resetToken: 'aresettoken',
+      resetTokenExpiresIn: new Date(
+        new Date().getTime() - 20 * 1000 * 60,
+      ),
+    });
+
+    const response = await request(app)
+      .put('/api/v1/users/recovery')
+      .send({ token: 'aresettoken', password: 'user$passw1d#D' });
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe(
+      'Token expired. Please make another request',
+    );
+  });
+
+  it('return 200 when correct and non-expired token is sent for  password change request', async () => {
+    await createUser({
+      ...validData,
+      resetToken: 'aresettoken',
+      resetTokenExpiresIn: new Date(
+        new Date().getTime() + 20 * 1000 * 60,
+      ),
+    });
+
+    const response = await request(app)
+      .put('/api/v1/users/recovery')
+      .send({ token: 'aresettoken', password: 'user$passw1d#D' });
+
+    expect(response.status).toBe(200);
+  });
 });

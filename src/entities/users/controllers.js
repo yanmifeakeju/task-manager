@@ -63,9 +63,18 @@ export const activateUser = async (req, res, next) => {
   }
 };
 
-export const recoverAccount = async (req, res, next) => {
+export const updatePassword = async (req, res, next) => {
   try {
-    const user = await UserService.resetPasswordToken(req.body);
+    await UserService.resetPasswordToken(req.body);
+    res.send();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateAccountPassword = async (req, res, next) => {
+  try {
+    await UserService.updateUserPassword(req.body);
     res.send();
   } catch (error) {
     next(error);

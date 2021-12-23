@@ -123,4 +123,24 @@ export const resetPasswordToken = async ({ email }) => {
   // TODO::Send token in email
 };
 
+export const updateUserPassword = async ({ token, password }) => {
+  const user = await User.findOne({ resetToken: token });
+
+  if (!user) {
+    throw new ErrorResponse('Unable to retrieve user data', 404);
+  }
+
+  const currentTime = new Date();
+  if (currentTime > user.resetTokenExpiresIn) {
+    console.log('here');
+    throw new ErrorResponse(
+      'Token expired. Please make another request',
+      404,
+    );
+  }
+
+  user.password = password;
+  await user.save();
+};
+
 // export const updatePassword = async (id, password) => {};
