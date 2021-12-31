@@ -132,7 +132,6 @@ export const updateUserPassword = async ({ token, password }) => {
 
   const currentTime = new Date();
   if (currentTime > user.resetTokenExpiresIn) {
-    console.log('here');
     throw new ErrorResponse(
       'Token expired. Please make another request',
       404,
@@ -140,6 +139,7 @@ export const updateUserPassword = async ({ token, password }) => {
   }
 
   user.password = password;
+  user.tokens = [];
   await user.save();
 };
 

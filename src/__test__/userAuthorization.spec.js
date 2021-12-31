@@ -84,6 +84,7 @@ describe('User Authorization', () => {
     const response = await request(app)
       .get('/api/v1/users/me')
       .set('Authorization', `Bearer ${authorizationToken}`);
+
     const { status, body } = response;
 
     expect(status).toBe(200);
