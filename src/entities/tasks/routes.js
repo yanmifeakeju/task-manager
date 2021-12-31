@@ -1,29 +1,12 @@
 import { Router } from 'express';
 import { protect } from '../../middlewares/auth.js';
-import {
-  createTask,
-  getTasks,
-  updateTaskParticipants,
-} from './controllers.js';
-import {
-  populateTaskFromRequestParams,
-  validateNewTaskRequest,
-} from './middleware.js';
 
-const taskRouter = Router();
+const router = Router();
 
-taskRouter
-  .route('/')
-  .post(protect, validateNewTaskRequest, createTask)
-  .get(protect, getTasks);
+// this will be a protected route
 
-// handle participants
-taskRouter
-  .route('/:taskId/participants')
-  .put(
-    protect,
-    populateTaskFromRequestParams,
-    updateTaskParticipants,
-  );
+router.post('/', protect, async (req, res) => {
+  res.send('task router');
+});
 
-export default taskRouter;
+export default router;

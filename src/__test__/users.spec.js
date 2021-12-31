@@ -1,12 +1,10 @@
-/* eslint-disable no-undef */
 import 'dotenv/config';
 import request from 'supertest';
-// import nodemailerStub from 'nodemailer-stub';
 import * as db from './db.js';
 import User from '../entities/users/model.js';
 import app from '../server.js';
 
-jest.setTimeout(5000000);
+jest.setTimeout(500000);
 
 beforeAll(() => db.connect());
 afterEach(() => db.clearDatabase());

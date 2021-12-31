@@ -28,17 +28,9 @@ const TaskSchema = new Schema({
     required: true,
     ref: 'users',
   },
-  participants: [
-    {
-      participant: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        unique: true,
-        ref: 'users',
-      },
-    },
-  ],
 });
+
 TaskSchema.plugin(arrayUniquePlugin);
 const Task = model('tasks', TaskSchema);
+
 export default Task;
