@@ -11,12 +11,13 @@ export default function errorResponder(error, req, res, _next) {
   }
 
   if (error.name && error.name === 'ValidationError') {
-    const validationErrors = error.details.map(
-      ({ path, message }) => ({
+    const validationErrors =
+      error.details &&
+      error.details.map(({ path, message }) => ({
         field: path[0],
         message,
-      }),
-    );
+      }));
+
     message = 'Validation Invalid data in request body';
     statusCode = 400;
     data = { validationErrors };
@@ -26,6 +27,7 @@ export default function errorResponder(error, req, res, _next) {
     message = 'You have provided a bad authorization token';
     statusCode = 403;
   }
+
   return res.status(statusCode).json({
     status: false,
     message,

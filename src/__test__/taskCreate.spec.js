@@ -78,7 +78,7 @@ describe('Task Creation', () => {
     expect(response.body.data.validationErrors).toBeTruthy();
   });
 
-  it('returns 200 for authenticated request with valid fields and valid values', async () => {
+  it('returns 201 for authenticated request with valid fields and valid values', async () => {
     const user = await createUser(validData);
     const token = await user.generateAuthToken();
 
@@ -87,10 +87,10 @@ describe('Task Creation', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'a title', description: 'a description' });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
   });
 
-  it('returns 200 for authenticated request with valid fields and valid values and valid value for optional field', async () => {
+  it('returns 201 for authenticated request with valid fields and valid values and valid value for optional field', async () => {
     const user = await createUser(validData);
     const token = await user.generateAuthToken();
 
@@ -103,6 +103,23 @@ describe('Task Creation', () => {
         priority: 'low',
       });
 
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(201);
+  });
+
+  it('returns 201 for authenticated request with valid fields and values with task data in request body', async () => {
+    const user = await createUser(validData);
+    const token = await user.generateAuthToken();
+
+    const response = await request(app)
+      .post('/api/v1/tasks')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        title: 'a title',
+        description: 'a description',
+        priority: 'low',
+      });
+
+    expect(response.status).toBe(201);
+    expect(response.body.data.task).toBeTruthy();
   });
 });
