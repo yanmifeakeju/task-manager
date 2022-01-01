@@ -28,6 +28,18 @@ const TaskSchema = new Schema({
     required: true,
     ref: 'users',
   },
+  collaborators: [
+    {
+      collaborator: {
+        type: Schema.Types.ObjectId,
+        ref: 'users',
+      },
+      accepted: {
+        type: Boolean,
+        default: false,
+      },
+    },
+  ],
 });
 
 TaskSchema.plugin(arrayUniquePlugin);

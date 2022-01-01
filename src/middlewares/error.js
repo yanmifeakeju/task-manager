@@ -10,6 +10,11 @@ export default function errorResponder(error, req, res, _next) {
     statusCode = 409;
   }
 
+  if (error.name && error.name === 'CastError') {
+    message = `Bad ID "${error.value}" in request parameter.`;
+    statusCode = 400;
+  }
+
   if (error.name && error.name === 'ValidationError') {
     const validationErrors =
       error.details &&
