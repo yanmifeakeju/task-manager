@@ -1,5 +1,6 @@
-/* eslint-disable no-underscore-dangle */
 import Joi from 'joi';
+import ErrorResponse from '../../error/ErrorResponse.js';
+import User from '../users/model.js';
 import Task from './model.js';
 
 export const create = async (req, res, next) => {
@@ -19,11 +20,28 @@ export const create = async (req, res, next) => {
   }
 };
 
-export const getTask = async (req, res, next) => {
+export const getTasks = async (req, res, next) => {
   try {
-    const task = await Task.find({ owner: req.user.id }).populate(
+    const tasks = await Task.find({ owner: req.user.id }).populate(
       'owner',
     );
+
+    res.status(200).json({
+      status: true,
+      message: 'tasks retrieved',
+      data: { count: tasks.length, tasks },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getTask = async (req, res, next) => {
+  try {
+    const task = await Task.find({
+      _id: req.params.task,
+      owner: req.user.id,
+    }).populate('owner');
 
     res.status(200).json({
       status: true,
@@ -41,7 +59,17 @@ export const addCollaborator = async (req, res, next) => {
       email: Joi.string().email().required(),
     });
     const value = await schema.validateAsync(req.body);
-    req.task.priority = 'high';
+
+    const user = await User.findOne({ email: value.email });
+
+    if (!user)
+      return next(
+        new ErrorResponse(
+          'We cannot find user given email address',
+          404,
+        ),
+      );
+
     await req.task.save();
     console.log(req.task);
     res.send();

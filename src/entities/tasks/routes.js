@@ -1,6 +1,11 @@
 import { Router } from 'express';
 import { protect } from '../../middlewares/auth.js';
-import { addCollaborator, create, getTask } from './controllers.js';
+import {
+  addCollaborator,
+  create,
+  getTask,
+  getTasks,
+} from './controllers.js';
 import {
   getTaskFromParams,
   validateTaskCreation,
@@ -11,7 +16,8 @@ const router = Router();
 // this will be a protected route
 
 router.post('/', protect, validateTaskCreation, create);
-router.get('/', protect, getTask);
+router.get('/', protect, getTasks);
+router.get('/:task', protect, getTask);
 router.put(
   '/:task/collaborate',
   protect,
