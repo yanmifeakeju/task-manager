@@ -87,10 +87,16 @@ export const addCollaborator = async (req, res, next) => {
       );
 
     const { task } = req;
+    if (task.owner !== req.user.id)
+      return next(new ErrorResponse('Unauthorized action', 401));
     task.collaborators.push({ collaborator: user.id });
     task.save();
-    console.log(task);
-    res.send();
+
+    return res.status(200).json({
+      status: true,
+      message: 'New collaborator added',
+      data: { task },
+    });
   } catch (error) {
     next(error);
   }
