@@ -22,9 +22,17 @@ export const create = async (req, res, next) => {
 
 export const getTasks = async (req, res, next) => {
   try {
-    const tasks = await Task.find({ owner: req.user.id }).populate(
-      'owner',
-    );
+    const tasks = await Task.find()
+      .and([
+        {
+          $or: [
+            { owner: req.user.id },
+            { 'collaborators.collaborator': req.user.id },
+          ],
+        },
+      ])
+      .populate('owner')
+      .populate('collaborators.collaborator');
 
     res.status(200).json({
       status: true,
@@ -59,19 +67,20 @@ export const addCollaborator = async (req, res, next) => {
       email: Joi.string().email().required(),
     });
     const value = await schema.validateAsync(req.body);
-
     const user = await User.findOne({ email: value.email });
 
     if (!user)
       return next(
         new ErrorResponse(
-          'We cannot find user given email address',
+          `No account with ${value.email}  exists.`,
           404,
         ),
       );
 
-    await req.task.save();
-    console.log(req.task);
+    const { task } = req;
+    task.collaborators.push({ collaborator: user.id });
+    task.save();
+    console.log(task);
     res.send();
   } catch (error) {
     next(error);
