@@ -14,11 +14,13 @@ export const validateTaskCreation = async (req, res, next) => {
 
 export const getTaskFromParams = async (req, res, next) => {
   try {
-    const task = await Task.findById(req.params.task);
+    const task = await Task.findById(req.params.task)
+      .populate('owner')
+      .populate('collaborators.collaborator');
     if (!task)
       return next(
         new ErrorResponse(
-          `No task with identifier ${req.params.id}`,
+          `No task with identifier ${req.params.task}`,
           404,
         ),
       );

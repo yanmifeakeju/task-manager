@@ -5,10 +5,12 @@ import Task from './model.js';
 
 export const create = async (req, res, next) => {
   try {
-    const task = await Task.create({
+    let task = await Task.create({
       ...req.task,
       owner: req.user.id,
     });
+
+    task = await task.populate('owner');
 
     res.status(201).json({
       status: true,
@@ -36,7 +38,7 @@ export const getTasks = async (req, res, next) => {
 
     res.status(200).json({
       status: true,
-      message: 'tasks retrieved',
+      message: 'Tasks retrieved',
       data: { count: tasks.length, tasks },
     });
   } catch (error) {
@@ -86,11 +88,14 @@ export const addCollaborator = async (req, res, next) => {
         ),
       );
 
-    const { task } = req;
-    if (task.owner !== req.user.id)
+    let { task } = req;
+
+    if (task.owner.id !== req.user.id)
       return next(new ErrorResponse('Unauthorized action', 401));
+
     task.collaborators.push({ collaborator: user.id });
-    task.save();
+    task = await task.populate('collaborators.collaborator');
+    await task.save();
 
     return res.status(200).json({
       status: true,
@@ -98,6 +103,7 @@ export const addCollaborator = async (req, res, next) => {
       data: { task },
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };

@@ -1,5 +1,7 @@
+/* eslint-disable func-names */
 import mongoose from 'mongoose';
 import arrayUniquePlugin from 'mongoose-unique-array';
+import ErrorResponse from '../../error/ErrorResponse.js';
 
 const { Schema, model } = mongoose;
 
@@ -33,6 +35,7 @@ const TaskSchema = new Schema({
       collaborator: {
         type: Schema.Types.ObjectId,
         ref: 'users',
+        unique: true,
       },
       accepted: {
         type: Boolean,
@@ -42,7 +45,33 @@ const TaskSchema = new Schema({
   ],
 });
 
-TaskSchema.plugin(arrayUniquePlugin);
+TaskSchema.pre('save', async function (next) {
+  if (this.isModified('collaborators')) {
+    const newCollaborator =
+      this.collaborators[this.collaborators.length - 1];
+
+    console.log(this.collaborators.length);
+
+    const isExistingCollaborator = this.collaborators.filter(
+      (collaborator, index) => {
+        if (index !== this.collaborators.length - 1) {
+          return (
+            collaborator.collaborator.id ===
+            newCollaborator.collaborator.id
+          );
+        }
+      },
+    );
+
+    if (isExistingCollaborator.length) {
+      const error = new ErrorResponse(
+        'Duplicate Collaborator Detected',
+      );
+
+      next(error);
+    }
+  }
+});
 const Task = model('tasks', TaskSchema);
 
 export default Task;
