@@ -48,8 +48,17 @@ export const getTask = async (req, res, next) => {
   try {
     const task = await Task.find({
       _id: req.params.task,
-      owner: req.user.id,
-    }).populate('owner');
+    })
+      .and([
+        {
+          $or: [
+            { owner: req.user.id },
+            { 'collaborators.collaborator': req.user.id },
+          ],
+        },
+      ])
+      .populate('owner')
+      .populate('collaborators.collaborator');
 
     res.status(200).json({
       status: true,
