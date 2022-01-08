@@ -1,6 +1,6 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable func-names */
 import mongoose from 'mongoose';
-import arrayUniquePlugin from 'mongoose-unique-array';
 import ErrorResponse from '../../error/ErrorResponse.js';
 
 const { Schema, model } = mongoose;
@@ -50,8 +50,6 @@ TaskSchema.pre('save', async function (next) {
     const newCollaborator =
       this.collaborators[this.collaborators.length - 1];
 
-    console.log(this.collaborators.length);
-
     const isExistingCollaborator = this.collaborators.filter(
       (collaborator, index) => {
         if (index !== this.collaborators.length - 1) {
@@ -65,7 +63,8 @@ TaskSchema.pre('save', async function (next) {
 
     if (isExistingCollaborator.length) {
       const error = new ErrorResponse(
-        'Duplicate Collaborator Detected',
+        'User already a collaborator on this task',
+        409,
       );
 
       next(error);

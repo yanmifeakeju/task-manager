@@ -103,7 +103,6 @@ export const addCollaborator = async (req, res, next) => {
       data: { task },
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

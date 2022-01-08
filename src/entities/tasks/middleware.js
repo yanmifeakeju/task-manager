@@ -32,7 +32,7 @@ export const getTaskFromParams = async (req, res, next) => {
   }
 };
 
-export const getUserFromReqBody = async (req, res, next) => {
-  try {
-  } catch (error) {}
-};
+// export const getUserFromReqBody = async (req, res, next) => {
+//   try {
+//   } catch (error) {}
+// };

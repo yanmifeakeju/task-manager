@@ -1,8 +1,10 @@
 import 'dotenv/config';
 import request from 'supertest';
 import * as db from './db.js';
-import { createUser } from './utils.js';
+import { createUser, createTaskWithUser } from './utils.js';
 import app from '../server.js';
+
+const baseURL = '/api/v1/tasks';
 
 beforeAll(() => db.connect());
 afterEach(() => db.clearDatabase());
@@ -121,5 +123,50 @@ describe('Task Creation', () => {
 
     expect(response.status).toBe(201);
     expect(response.body.data.task).toBeTruthy();
+  });
+});
+
+describe('Retrieve Task', () => {
+  it('return 401 for unauthenticated GET request to /tasks ', async () => {
+    const response = await request(app).get('/api/v1/tasks').send();
+
+    expect(response.status).toBe(401);
+  });
+
+  it('returns 200  for authenticated GET request to /tasks', async () => {
+    const user = await createUser(validData);
+    const token = await user.generateAuthToken();
+
+    const response = await request(app)
+      .get(baseURL)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+  });
+
+  it('returns an empty array of task for user with no task', async () => {
+    const user = await createUser(validData);
+    const token = await user.generateAuthToken();
+
+    const response = await request(app)
+      .get(baseURL)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body.data.tasks.length).toBe(0);
+  });
+
+  it('returns an array of tasks for user with tasks', async () => {
+    const { user, task } = await createTaskWithUser();
+    const token = await user.generateAuthToken();
+
+    const response = await request(app)
+      .get(baseURL)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.body.data.tasks.length).toBe(1);
+
+    expect(
+      response.body.data.tasks[0]._id === task.id.toString(),
+    ).toBeTruthy();
   });
 });
